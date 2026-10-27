@@ -25,6 +25,13 @@ class AutenticacaoTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse("home"))
 
+    def test_authenticated_user_is_redirected_from_login_page(self):
+        self.client.force_login(self.usuario)
+        response = self.client.get(reverse("login"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("home"))
+
     def test_login_with_invalid_credentials_shows_error(self):
         response = self.client.post(
             reverse("login"),
@@ -32,4 +39,4 @@ class AutenticacaoTests(TestCase):
             follow=True,
         )
 
-        self.assertContains(response, "Credenciais inválidas.")
+        self.assertContains(response, "Credenciais inv?lidas.")

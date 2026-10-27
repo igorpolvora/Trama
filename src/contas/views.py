@@ -13,12 +13,15 @@ def cadastro(request):
         usuario = form.save()
         Perfil.objects.create(usuario=usuario, apelido=usuario.username)
         login(request, usuario)
-        messages.success(request, "Cadastro concluído.")
+        messages.success(request, "Cadastro conclu?do.")
         return redirect("home")
     return render(request, "contas/cadastro.html", {"form": form})
 
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -26,7 +29,7 @@ def login_view(request):
         if usuario is not None:
             login(request, usuario)
             return redirect("home")
-        messages.error(request, "Credenciais inválidas.")
+        messages.error(request, "Credenciais inv?lidas.")
     return render(request, "contas/login.html")
 
 

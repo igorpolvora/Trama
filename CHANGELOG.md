@@ -14,6 +14,7 @@ Todos as mudanças relevantes do projeto serão registradas aqui.
 - Incremento 4 em base funcional: desafios com participação e conclusão, além de eventos de pontuação idempotentes por regra.
 - Integração inicial do ranking da temporada à navegação principal e roteamento do módulo de pontuação, com teste de ordenação por pontos.
 - Ajuste de compatibilidade do Django para versões suportadas no Python 3.14, resolvendo a falha de renderização no template de login.
+- Base inicial do módulo de amizades com solicitações, aceite e listagem, além de proteção para login já autenticado e testes de regressão.
 
 ## 0.1.0
 

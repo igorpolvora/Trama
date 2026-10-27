@@ -80,3 +80,16 @@
 - Riscos, limitações e pendências: sem decisão final de produto, a base de competição continua intencionalmente limitada e não substitui regras de liga, ranking global e moderação.
 - Git: branch `main`; commit `598f0ab` registrado com a mensagem `feat(mvp): add challenge and scoring foundation`.
 - Próxima ação sugerida: validar a integração completa da competição com a experiência ao incluir o ranking na navegação de autenticação e manter as regras pendentes explícitas.
+
+### 2026-10-26 — ID da tarefa: amizades e reforço do login
+- Status: concluída
+- Requisitos vinculados: RF02, RF03, RF06, RF07, CA-07, CA-11, CA-12, RNF-05
+- Objetivo e implementação: iniciar o módulo de amizades com solicitações, aceite e listagem, e reforçar o fluxo de login para redirecionar usuários autenticados de volta à home.
+- Arquivos afetados: [src/contas/views.py](../src/contas/views.py), [src/contas/tests.py](../src/contas/tests.py), [src/amizades/views.py](../src/amizades/views.py), [src/amizades/urls.py](../src/amizades/urls.py), [src/amizades/tests.py](../src/amizades/tests.py), [src/trama/urls.py](../src/trama/urls.py), [templates/contas/home.html](../templates/contas/home.html), [templates/amizades/lista.html](../templates/amizades/lista.html)
+- Testes executados e resultado: `python manage.py test contas amizades desafios pontuacao` — OK, 10 testes executados com sucesso.
+- Testes não executados e motivo: ainda não há interface completa de busca de usuários nem bloqueio de conta, itens que continuam pendentes de decisão de produto/UX.
+- Problemas encontrados e soluções adotadas: o login agora evita o retorno à página de entrada para usuários já autenticados; o módulo de amizades usa o modelo existente e mantém a regra de status pendente/aceita sem criar suposições sobre regras de bloqueio final.
+- Decisões tomadas / ADRs: amizade foi tratada como fluxo mínimo de solicitação com aprovação por parte do destinatário, respeitando o modelo do produto sem definir regras de ranking ou moderação.
+- Riscos, limitações e pendências: o módulo ainda não cobre busca por usuários, notificações e bloqueio, e a experiência de relacionamento social continua sendo uma base inicial do MVP.
+- Git: branch `main`; commit `a90fdf2` registrado com a mensagem `fix(auth): stabilize login tests on Django 5.2`.
+- Próxima ação sugerida: avançar para a próxima extensão de rede social, como busca de usuários ou bloqueio, mantendo a visibilidade e a privacidade centralizadas no servidor.

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <body>
+    <h1>Amizades</h1>
+
+    {% if messages %}
+      <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <h2>Solicitações recebidas</h2>
+    {% if solicitacoes %}
+      <ul>
+        {% for amizade in solicitacoes %}
+          <li>
+            {{ amizade.de.username }}
+            <a href="{% url 'amizades:responder' amizade.pk 'aceitar' %}">Aceitar</a>
+            <a href="{% url 'amizades:responder' amizade.pk 'recusar' %}">Recusar</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Você não tem solicitações pendentes.</p>
+    {% endif %}
+
+    <h2>Amigos</h2>
+    {% if amizades %}
+      <ul>
+        {% for amizade in amizades %}
+          {% if amizade.de == request.user %}
+            <li>{{ amizade.para.username }}</li>
+          {% else %}
+            <li>{{ amizade.de.username }}</li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Você ainda não tem amizades confirmadas.</p>
+    {% endif %}
+
+    <p><a href="{% url 'home' %}">Voltar</a></p>
+  </body>
+</html>
