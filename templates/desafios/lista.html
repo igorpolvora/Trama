@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <body>
+    <h1>Desafios</h1>
+    <p><a href="{% url 'desafios:criar' %}">Criar desafio</a> | <a href="{% url 'home' %}">Voltar</a></p>
+
+    {% if desafios %}
+      <ul>
+        {% for desafio in desafios %}
+          <li>
+            <strong>{{ desafio.nome }}</strong> - {{ desafio.descricao }}
+            {% with desafio_id=desafio.id %}
+              {% for participacao in participacoes %}
+                {% if participacao.desafio_id == desafio_id %}
+                  {% if participacao.concluido %}
+                    <span>Concluído</span>
+                  {% else %}
+                    <span>Participando</span>
+                    <a href="{% url 'desafios:concluir' desafio_id %}">Concluir</a>
+                  {% endif %}
+                  {% if participacao.concluido %}
+                    <span>✓</span>
+                  {% endif %}
+                {% endif %}
+              {% empty %}
+                <a href="{% url 'desafios:participar' desafio_id %}">Participar</a>
+              {% endfor %}
+              {% for participacao in participacoes %}
+                {% if participacao.desafio_id != desafio_id %}
+                  <a href="{% url 'desafios:participar' desafio_id %}">Participar</a>
+                {% endif %}
+              {% endfor %}
+            {% endwith %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Nenhum desafio disponível.</p>
+    {% endif %}
+  </body>
+</html>

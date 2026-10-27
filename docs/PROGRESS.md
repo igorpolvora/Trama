@@ -54,3 +54,16 @@
 - Riscos, limitações e pendências: moderação, bloqueio e denúncia requerem regras de produto específicas antes do uso em ambiente real; a base serve ao MVP inicial, mas não substitui revisão de segurança.
 - Git: branch `main`; sem commit, apenas arquivos novos no working tree.
 - Próxima ação sugerida: avançar para desafios, pontuação e rankings, mantendo os limites de D08, D09 e D10.
+
+### 2026-10-26 — ID da tarefa: incremento 4 base de desafios e pontuação
+- Status: concluída
+- Requisitos vinculados: RF10, RF11, RF12, CA-15, CA-16, CA-17, CA-18, CA-19, RNF-08
+- Objetivo e implementação: criar a base de desafios com inscrição, conclusão e atribuição de pontos por evento idempotente. Também foi adicionado o serviço de registro de pontos, mantendo a regra de que o cliente não define a quantidade de pontos.
+- Arquivos afetados: [src/desafios/forms.py](../src/desafios/forms.py), [src/desafios/views.py](../src/desafios/views.py), [src/desafios/urls.py](../src/desafios/urls.py), [src/desafios/tests.py](../src/desafios/tests.py), [src/pontuacao/services.py](../src/pontuacao/services.py), [src/pontuacao/tests.py](../src/pontuacao/tests.py), [templates/desafios/lista.html](../templates/desafios/lista.html), [templates/desafios/formulario.html](../templates/desafios/formulario.html)
+- Testes executados e resultado: `python manage.py test comunidade diario desafios pontuacao` — OK, 9 testes executados com sucesso.
+- Testes não executados e motivo: rankings globais e temporada de competição continuam pendentes porque D08 e D09 ainda não foram aprovados.
+- Problemas encontrados e soluções adotadas: o registro de evento de pontuação foi centralizado em um serviço único com chave de idempotência; isso evita duplicação por requisições repetidas.
+- Decisões tomadas / ADRs: a pontuação foi tratada como evento auditável, sem guardar conteúdo do registro, e a competição ficou como base de integração sem estabelecer a regra final de rankings globais.
+- Riscos, limitações e pendências: D08 (ranking global), D09 (temporadas e conquistas) e D10 (fraude e moderação) ainda exigem aprovação antes de exportar esse comportamento para a experiência real.
+- Git: branch `main`; sem commit, apenas arquivos alterados no working tree.
+- Próxima ação sugerida: formalizar a primeira versão de rankings e temporadas, mantendo a competição opcional e os critérios de visibilidade intactos.

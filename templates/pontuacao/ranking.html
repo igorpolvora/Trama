@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <body>
+    <h1>Ranking da temporada</h1>
+    {% if temporada %}
+      <p>Temporada: {{ temporada.nome }} ({{ temporada.inicio }} a {{ temporada.fim }})</p>
+    {% else %}
+      <p>Nenhuma temporada ativa no momento.</p>
+    {% endif %}
+
+    {% if dados %}
+      <ol>
+        {% for item in dados %}
+          <li>{{ item.usuario.username }} — {{ item.total }} pontos</li>
+        {% endfor %}
+      </ol>
+    {% else %}
+      <p>Nenhum usuário optou por competir nesta temporada.</p>
+    {% endif %}
+
+    <p><a href="{% url 'home' %}">Voltar</a></p>
+  </body>
+</html>

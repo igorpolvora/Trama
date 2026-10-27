@@ -5,6 +5,7 @@
     <p>Usuário autenticado: {{ usuario.username }}</p>
     <p><a href="{% url 'diario:listar' %}">Ir para o diário</a></p>
     <p><a href="{% url 'comunidade:feed' %}">Ir para a comunidade</a></p>
+    <p><a href="{% url 'desafios:lista' %}">Ir para os desafios</a></p>
     <p><a href="{% url 'logout' %}">Sair</a></p>
   </body>
 </html>

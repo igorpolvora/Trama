@@ -11,6 +11,7 @@ Todos as mudanças relevantes do projeto serão registradas aqui.
 - Esqueleto técnico inicial do Django criado para os módulos de contas, diário, visibilidade, comunidade, moderação, desafios e pontuação.
 - Incremento 2 em base funcional: diário com criação, edição, exclusão, metas e visibilidade centralizada por audiência e amizade.
 - Incremento 3 em base funcional: feed de comunidade, criação de conteúdo, comentários e testes de visibilidade por audiência.
+- Incremento 4 em base funcional: desafios com participação e conclusão, além de eventos de pontuação idempotentes por regra.
 
 ## 0.1.0
 
