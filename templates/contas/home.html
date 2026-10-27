@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <body>
+    <h1>Bem-vindo ao Trama</h1>
+    <p>Usuário autenticado: {{ usuario.username }}</p>
+    <p><a href="{% url 'diario:listar' %}">Ir para o diário</a></p>
+    <p><a href="{% url 'comunidade:feed' %}">Ir para a comunidade</a></p>
+    <p><a href="{% url 'logout' %}">Sair</a></p>
+  </body>
+</html>

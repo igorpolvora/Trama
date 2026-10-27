@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <body>
+    <h1>Diário de estudos</h1>
+    <p><a href="{% url 'diario:criar' %}">Novo registro</a> | <a href="{% url 'diario:meta-criar' %}">Nova meta</a> | <a href="{% url 'home' %}">Voltar</a></p>
+
+    <h2>Metas</h2>
+    {% if metas %}
+      <ul>
+        {% for meta in metas %}
+          <li>{{ meta.descricao }} ({{ meta.progresso }}%) <a href="{% url 'diario:meta-editar' meta.pk %}">Editar</a></li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Sem metas ainda.</p>
+    {% endif %}
+
+    <h2>Registros</h2>
+    {% if registros %}
+      <ul>
+        {% for registro in registros %}
+          <li>
+            <strong>{{ registro.titulo }}</strong> — {{ registro.assunto }} — {{ registro.visibilidade }}
+            {% if registro.autor == request.user %}
+              <a href="{% url 'diario:editar' registro.pk %}">Editar</a>
+              <a href="{% url 'diario:excluir' registro.pk %}">Excluir</a>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Nenhum registro disponível.</p>
+    {% endif %}
+  </body>
+</html>

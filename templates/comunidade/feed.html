@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <body>
+    <h1>Feed da comunidade</h1>
+    <p><a href="{% url 'comunidade:novo' %}">Novo conteúdo</a> | <a href="{% url 'home' %}">Voltar</a></p>
+
+    {% if conteudos %}
+      <ul>
+        {% for conteudo in conteudos %}
+          <li>
+            <strong>{{ conteudo.titulo|default:'Sem título' }}</strong> — {{ conteudo.autor.username }} — {{ conteudo.visibilidade }}
+            <a href="{% url 'comunidade:detalhe' conteudo.pk %}">Abrir</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Nenhum conteúdo disponível.</p>
+    {% endif %}
+  </body>
+</html>

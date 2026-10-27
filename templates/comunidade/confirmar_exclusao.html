@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <body>
+    <h1>Excluir comentário</h1>
+    <p>Deseja remover este comentário?</p>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit">Confirmar exclusão</button>
+    </form>
+    <p><a href="{% url 'comunidade:detalhe' comentario.conteudo.pk %}">Cancelar</a></p>
+  </body>
+</html>

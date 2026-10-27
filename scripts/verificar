@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -eu
+
+required=(
+  "README.md"
+  "CHANGELOG.md"
+  "Trama.md"
+  "AGENTS.MD"
+  "docs/PROGRESS.md"
+  "docs/ROADMAP.md"
+  "docs/ARCHITECTURE.md"
+  "docs/SECURITY.md"
+  "Trama_Incremento_0.md"
+)
+
+for item in "${required[@]}"; do
+  if [ ! -f "$item" ]; then
+    echo "Falta: $item"
+    exit 1
+  fi
+done
+
+echo "Documentação base do Trama verificada com sucesso."

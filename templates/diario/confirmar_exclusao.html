@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <body>
+    <h1>Excluir registro</h1>
+    <p>Deseja remover o registro "{{ registro.titulo }}"?</p>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit">Confirmar exclusão</button>
+    </form>
+    <p><a href="{% url 'diario:listar' %}">Cancelar</a></p>
+  </body>
+</html>
