@@ -12,4 +12,5 @@ urlpatterns = [
     path("diario/", include(("diario.urls", "diario"), namespace="diario")),
     path("comunidade/", include(("comunidade.urls", "comunidade"), namespace="comunidade")),
     path("desafios/", include(("desafios.urls", "desafios"), namespace="desafios")),
+    path("pontuacao/", include(("pontuacao.urls", "pontuacao"), namespace="pontuacao")),
 ]

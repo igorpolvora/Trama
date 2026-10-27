@@ -9,3 +9,4 @@ venv/
 .coverage
 .DS_Store
 sqlite3.db
+db.sqlite3

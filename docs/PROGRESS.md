@@ -2,17 +2,17 @@
 
 ## Estado atual
 
-- Status: em projeto / desenho inicial com base técnica esboçada
-- Requisitos vinculados: RF01, RF02, RF03, RF06, RNF-01 a RNF-08, RNF-12, RNF-13, RNF-19, RNF-20
-- Objetivo: preparar a base técnica e de documentação para o Incremento 0 e a implementação segura do Incremento 1.
-- Arquivos afetados: [README.md](../README.md), [Trama.md](../Trama.md), [AGENTS.MD](../AGENTS.MD), [manage.py](../manage.py), [src/trama/settings.py](../src/trama/settings.py), [src/acesso/visibility.py](../src/acesso/visibility.py), [docs/ROADMAP.md](./ROADMAP.md), [docs/ARCHITECTURE.md](./ARCHITECTURE.md), [docs/SECURITY.md](./SECURITY.md)
-- Testes executados: verificação de sintaxe dos módulos Python com `python -m compileall .`.
-- Testes pendentes: infraestrutura real, autenticação, visibilidade, IDOR, regras de acessos e auditoria.
-- Problemas encontrados e soluções adotadas: decisões de produto pendentes foram mantidas como bloqueios explícitos e não como premissas; a base técnica foi organizada em módulos sugeridos no MVP.
-- Decisões tomadas: manter o desenho MVP alinhado ao documento [Trama.md](../Trama.md), priorizar privacidade e visibilidade centralizada, não inventar itens pendentes.
-- Riscos e pendências: decisões D01, D02, D08, D09, D10, D12, D14, D15 e D20 ainda exigem aprovação humana.
-- Git: branch `main`; sem commits ainda registrados.
-- Próxima ação sugerida: validar a estrutura Django inicial, depois avançar para as migrações e autenticação do Incremento 1.
+- Status: base funcional do MVP em andamento, com autenticação, diário, comunidade, desafios e ranking mínimo ativos
+- Requisitos vinculados: RF01, RF02, RF03, RF04, RF05, RF06, RF07, RF08, RF09, RF10, RF11, RF12, RNF-01 a RNF-08, RNF-12, RNF-13, RNF-19, RNF-20
+- Objetivo: consolidar a base técnica e funcional do MVP, preservando as decisões pendentes de produto e mantendo a competição opcional e limitada.
+- Arquivos afetados: [README.md](../README.md), [CHANGELOG.md](../CHANGELOG.md), [src/trama/settings.py](../src/trama/settings.py), [src/trama/urls.py](../src/trama/urls.py), [src/acesso/visibility.py](../src/acesso/visibility.py), [src/contas/views.py](../src/contas/views.py), [src/diario/views.py](../src/diario/views.py), [src/comunidade/views.py](../src/comunidade/views.py), [src/desafios/views.py](../src/desafios/views.py), [src/pontuacao/views.py](../src/pontuacao/views.py), [templates/contas/home.html](../templates/contas/home.html), [templates/pontuacao/ranking.html](../templates/pontuacao/ranking.html)
+- Testes executados: `python manage.py test desafios pontuacao` — OK, 4 testes executados com sucesso.
+- Testes pendentes: regras finais de liga, ranking global, temporadas, moderação e revisão de privacidade/legal, conforme decisões D08, D09, D10, D12 e D15.
+- Problemas encontrados e soluções adotadas: a lógica de pontuação foi centralizada em um serviço idempotente e a navegação do ranking foi integrada sem assumir regras ainda não aprovadas; a visibilidade continua sendo tratada por servidor.
+- Decisões tomadas: manter as decisões pendentes explícitas, preservar audiência privada/amigos/pública e tratar a competição como opt-in e não como regra obrigatória.
+- Riscos e pendências: D08, D09, D10, D12, D14, D15 e D20 ainda exigem aprovação humana antes de avançar para a etapa final da experiência.
+- Git: branch `main`; commit `598f0ab` registrado no histórico.
+- Próxima ação sugerida: validar a experiência completa com foco em ranking, navegação e exportação de comportamento do módulo de pontuação, mantendo o escopo restrito ao MVP aprovado.
 
 ## Diário de evolução
 
@@ -67,3 +67,16 @@
 - Riscos, limitações e pendências: D08 (ranking global), D09 (temporadas e conquistas) e D10 (fraude e moderação) ainda exigem aprovação antes de exportar esse comportamento para a experiência real.
 - Git: branch `main`; sem commit, apenas arquivos alterados no working tree.
 - Próxima ação sugerida: formalizar a primeira versão de rankings e temporadas, mantendo a competição opcional e os critérios de visibilidade intactos.
+
+### 2026-10-26 — ID da tarefa: integração do ranking e versionamento inicial
+- Status: concluída
+- Requisitos vinculados: RF10, RF11, RF12, CA-15, CA-16, CA-17, CA-18, CA-19, RNF-08
+- Objetivo e implementação: concluir a integração do módulo de pontuação com os fluxos principais, permitindo acesso ao ranking da temporada pela navegação autenticada e validando a ordenação dos usuários por pontos.
+- Arquivos afetados: [src/trama/urls.py](../src/trama/urls.py), [templates/contas/home.html](../templates/contas/home.html), [src/pontuacao/tests.py](../src/pontuacao/tests.py), [templates/pontuacao/ranking.html](../templates/pontuacao/ranking.html)
+- Testes executados e resultado: `python manage.py test desafios pontuacao` — OK, 4 testes executados com sucesso.
+- Testes não executados e motivo: a regra final de ligas, temporadas e ranking global continua pendente de aprovação do produto (D08, D09).
+- Problemas encontrados e soluções adotadas: a rota do ranking estava ausente e a página de entrada não expunha a navegação; ambos foram conectados ao fluxo principal sem assumir regras de competição ainda não aprovadas.
+- Decisões tomadas / ADRs: o ranking foi tratado como visão mínima da temporada ativa, com opt-in voluntário e ordenação por somatória de eventos de pontuação.
+- Riscos, limitações e pendências: sem decisão final de produto, a base de competição continua intencionalmente limitada e não substitui regras de liga, ranking global e moderação.
+- Git: branch `main`; commit `598f0ab` registrado com a mensagem `feat(mvp): add challenge and scoring foundation`.
+- Próxima ação sugerida: validar a integração completa da competição com a experiência ao incluir o ranking na navegação de autenticação e manter as regras pendentes explícitas.
