@@ -13,6 +13,7 @@ Todos as mudanças relevantes do projeto serão registradas aqui.
 - Incremento 3 em base funcional: feed de comunidade, criação de conteúdo, comentários e testes de visibilidade por audiência.
 - Incremento 4 em base funcional: desafios com participação e conclusão, além de eventos de pontuação idempotentes por regra.
 - Integração inicial do ranking da temporada à navegação principal e roteamento do módulo de pontuação, com teste de ordenação por pontos.
+- Ajuste de compatibilidade do Django para versões suportadas no Python 3.14, resolvendo a falha de renderização no template de login.
 
 ## 0.1.0
 
