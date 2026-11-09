@@ -2,9 +2,9 @@
 
 ## Estado atual
 
-- Etapa: 2/6 — Instalação por migrações e verificação isolada.
-- Implementação: Migrações iniciais de diário, amizades e moderação; verificador Python com checks, migrações normais, tabelas e descoberta em src; bancos descartáveis separados.
-- Verificação deste estado intermediário: SQLite: 16 descobertos, 16 aprovados, 0 ignorados, 80.638 s, saída 0; PostgreSQL: 16 descobertos, 16 aprovados, 0 ignorados, 78.390 s, saída 0
+- Etapa: 3/6 — Conclusão atômica, POST/CSRF e concorrência de desafios.
+- Implementação: Identificador do usuário corrigido, transação conjunta de conclusão/pontos e select_for_update; participar/concluir exigem POST/CSRF com formulários. Testes de primeira conclusão, repetição, rollback, autorização e concorrência PostgreSQL.
+- Verificação deste estado intermediário: SQLite: 24 descobertos, 23 aprovados, 1 ignorados, 102.341 s, saída 0; PostgreSQL: 24 descobertos, 24 aprovados, 0 ignorados, 99.776 s, saída 0
 - Git: histórico local organizado em commits na branch main; nenhum push autorizado.
 - Bancos: somente descartáveis; banco pessoal não utilizado.
 - Decisões D06/D09/D10 e demais condições de piloto não foram encerradas.
@@ -51,6 +51,39 @@ Registros de execução anteriores ao fracionamento (referem-se ao working tree 
 - Riscos, limitações e pendências: reverter migrações iniciais apaga tabelas; não aplicar em banco preexistente sem conferir esquema/backup. Demais achados da auditoria continuam abertos.
 - Git: branch main, base 5bbd7b2, não commitado.
 - Próxima ação sugerida: proteção POST/CSRF e CA-07 em incremento separado.
+
+### 2026-11-09 — Lote local 3: Conclusão atômica, POST/CSRF e concorrência de desafios
+- Escopo: Identificador do usuário corrigido, transação conjunta de conclusão/pontos e select_for_update; participar/concluir exigem POST/CSRF com formulários. Testes de primeira conclusão, repetição, rollback, autorização e concorrência PostgreSQL.
+- Verificação do estado intermediário: SQLite: 24 descobertos, 23 aprovados, 1 ignorados, 102.341 s, saída 0; PostgreSQL: 24 descobertos, 24 aprovados, 0 ignorados, 99.776 s, saída 0
+- Git: commit local deste incremento; consultar histórico.
+
+Registros de execução anteriores ao fracionamento (referem-se ao working tree histórico, não ao checkout intermediário):
+
+### 2026-11-09 — FIX-CSRF-DESAFIOS: POST e conclusão concorrente
+- Status: concluída.
+- Requisitos vinculados: RF10, RNF-11, CA-15, CA-27.
+- Objetivo e implementação: require_POST nas rotas de participação/conclusão; links convertidos em formulários CSRF; regras existentes preservadas.
+- Arquivos afetados: src/desafios/views.py, src/desafios/tests.py, templates/desafios/lista.html e documentos de changelog, arquitetura, segurança, roadmap e progresso.
+- Testes executados e resultado: scripts/verificar SQLite 31 descobertos, 30 aprovados + 1 skip PostgreSQL (114,812 s); PostgreSQL 31 aprovados (101,127 s); concorrência isolada 1 aprovado (2,025 s). Checks, migrações e tabelas passaram.
+- Testes não executados e motivo: concorrência ignorada no SQLite por não oferecer os locks PostgreSQL necessários; inscrição simultânea e navegador fora do escopo.
+- Problemas encontrados e soluções adotadas: sem duplicação/erro na conclusão simultânea; preservado select_for_update dentro da transação existente. Instrumentação do teste observa conexões dentro das requisições e espera de ambas pela mesma linha.
+- Decisões tomadas / ADRs: nenhuma; pontuação e regras atuais preservadas.
+- Riscos, limitações e pendências: outras ações e decisões de produto não alteradas; banco local preservado.
+- Git: main, base 5bbd7b2, não commitado.
+- Próxima ação sugerida: CA-07 da comunidade em incremento separado.
+
+### 2026-11-09 — FIX-CA15: conclusão atômica de desafios
+- Status: correção validada em SQLite; validação PostgreSQL pendente.
+- Requisitos vinculados: RF10, CA-15, CA-27, RNF-05.
+- Objetivo e implementação: corrigir falha na rota de conclusão e garantir que participação e pontos persistam juntos; idempotência mantida no serviço existente.
+- Arquivos afetados: views e testes de desafios, changelog, arquitetura, roadmap e progresso.
+- Testes executados e resultado: reprodução HTTP antes da correção (3 erros/4 testes); depois, oito testes de desafios/pontuação aprovados e dependências consistentes (`pip check`).
+- Testes não executados e motivo: PostgreSQL e concorrência real ainda sem ambiente de teste verificado.
+- Problemas encontrados e soluções adotadas: atributo inexistente corrigido; gravações reunidas em transação; teste injeta exceção depois de inserir evento e confirma reversão de evento e participação.
+- Decisões tomadas / ADRs: nenhuma decisão de produto alterada; regra e método HTTP existentes preservados.
+- Riscos, limitações e pendências: mutação por GET continua pendente; regras finais D09/D10 e validação PostgreSQL abertas.
+- Git: branch `main`, base `5bbd7b2`, não commitado.
+- Próxima ação sugerida: priorizar auditorias e proteção contra mutação por GET.
 
 ### 2026-10-26 — ID da tarefa: desenho inicial do MVP
 - Status: concluída

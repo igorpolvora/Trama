@@ -6,8 +6,12 @@ Todos as mudanças relevantes do projeto serão registradas aqui.
 
 - Registrados diagnóstico e auditoria como documentos históricos da revisão inicial.
 
+- Participação e conclusão de desafios exigem POST/CSRF, com formulários e testes de rota; teste PostgreSQL de duas conclusões simultâneas confirma crédito único.
+
 - Adicionadas migrações iniciais de diário, amizades e moderação, validadas em instalações vazias SQLite e PostgreSQL 18.
 - Comando `python scripts/verificar` agora valida instalação por migrações, tabelas e descobre a suíte em `src`, com bancos descartáveis separados para instalação e testes.
+
+- Corrigida a conclusão de desafios pela rota: identificador do usuário válido e transação conjunta para participação e pontos, com regressões de repetição, rollback e autorização.
 
 - Estrutura inicial do repositório criada.
 - Documentação base do projeto iniciada a partir dos arquivos de produto e operacional.

@@ -16,18 +16,27 @@
                     <span>Concluído</span>
                   {% else %}
                     <span>Participando</span>
-                    <a href="{% url 'desafios:concluir' desafio_id %}">Concluir</a>
+                    <form method="post" action="{% url 'desafios:concluir' desafio_id %}">
+                      {% csrf_token %}
+                      <button type="submit">Concluir</button>
+                    </form>
                   {% endif %}
                   {% if participacao.concluido %}
                     <span>✓</span>
                   {% endif %}
                 {% endif %}
               {% empty %}
-                <a href="{% url 'desafios:participar' desafio_id %}">Participar</a>
+                <form method="post" action="{% url 'desafios:participar' desafio_id %}">
+                  {% csrf_token %}
+                  <button type="submit">Participar</button>
+                </form>
               {% endfor %}
               {% for participacao in participacoes %}
                 {% if participacao.desafio_id != desafio_id %}
-                  <a href="{% url 'desafios:participar' desafio_id %}">Participar</a>
+                  <form method="post" action="{% url 'desafios:participar' desafio_id %}">
+                    {% csrf_token %}
+                    <button type="submit">Participar</button>
+                  </form>
                 {% endif %}
               {% endfor %}
             {% endwith %}

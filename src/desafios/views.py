@@ -1,6 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 
 from pontuacao.services import registrar_evento_pontos
 
@@ -30,6 +32,7 @@ def desafio_criar(request):
 
 
 @login_required
+@require_POST
 def desafio_participar(request, pk):
     desafio = get_object_or_404(Desafio, pk=pk)
     participacao, created = ParticipacaoDesafio.objects.get_or_create(
@@ -44,17 +47,23 @@ def desafio_participar(request, pk):
 
 
 @login_required
+@require_POST
+@transaction.atomic
 def desafio_concluir(request, pk):
-    participacao = get_object_or_404(ParticipacaoDesafio, desafio_id=pk, usuario=request.user)
+    participacao = get_object_or_404(
+        ParticipacaoDesafio.objects.select_for_update(),
+        desafio_id=pk,
+        usuario=request.user,
+    )
     if not participacao.concluido:
         participacao.concluido = True
-        participacao.save()
+        participacao.save(update_fields=["concluido"])
         registrar_evento_pontos(
             usuario=request.user,
             tipo="desafio",
             regra=f"conclusao:{participacao.desafio_id}",
             quantidade=10,
-            idempotencia=f"desafio:{participacao.desafio_id}:{request.user_id}:conclusao",
+            idempotencia=f"desafio:{participacao.desafio_id}:{request.user.pk}:conclusao",
         )
         messages.success(request, "Desafio concluído e pontos atribuídos.")
     else:

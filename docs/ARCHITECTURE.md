@@ -58,6 +58,8 @@ A regra central deve operar como filtro de consulta e de listagem:
 
 - Banco existente criado por sincronização manual não foi atualizado. Adoção das novas migrações nesse caso exige avaliação do esquema e backup; reversão das migrações iniciais remove tabelas/dados. Nenhum banco local foi utilizado nas verificações.
 
+- Participação e conclusão de desafios exigem POST/CSRF. A conclusão usa transação conjunta com os pontos e `select_for_update`. Rollback, repetição e autorização foram preservados nos testes HTTP. Concorrência validada em PostgreSQL 18: dois clientes com CSRF válido em conexões distintas aguardaram a mesma linha; ambas as respostas foram 302, com conclusão e um único evento de dez pontos. O teste usa `TransactionTestCase` e é ignorado explicitamente no SQLite, sem suporte equivalente a esse lock.
+
 - Ainda há decisões pendentes para cadastro, privacidade padrão, ranking global e retenção de dados.
 - A feature de ranking competitivo não deve ser implementada como premissa antes de D08 e D09.
 - A moderação de conteúdo privado continua dependente de D10.

@@ -29,7 +29,7 @@ Este roadmap organiza o primeiro ciclo de desenvolvimento em incrementos verific
 | RF07 | Feed simples | Feed filtrando itens acessíveis | pendente |
 | RF08 | Amizades e bloqueios | Solicitação, aceite e exclusão | pendente |
 | RF09 | Comentários | Comentário visível para quem tem acesso | pendente |
-| RF10 | Desafios | Participação e conclusão validada | pendente |
+| RF10 | CA-15/27 e RNF-11: conclusão atômica, titularidade e POST/CSRF | ConclusaoDesafioRotaTests, DesafiosCsrfTests, ConclusaoConcorrenteTests | parcial: regras D09/D10 pendentes |
 | RF11 | Progresso pessoal | Histórico separado de rankings | pendente |
 | RF12 | Competição | Ranking opcional e sem conteúdo privado | pendente |
 | RF13 | Proteção e bloqueio | Requisição bloqueada e notificação | pendente |

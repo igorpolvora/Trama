@@ -39,6 +39,8 @@ Os riscos principais previstos para o MVP são:
 
 ## Controles recomendados
 
+Desafios: participar e concluir exigem POST, com tokens nos formulários e verificação do middleware CSRF. As regressões com CSRF habilitado cobrem GET 405 sem mutação, POST sem token/inválido 403 e POST autorizado. Permissões e dez pontos existentes foram preservados. Teste de concorrência PostgreSQL pela rota verifica exclusão mútua sobre a participação e crédito único (CA-15).
+
 - Centralizar visibilidade em uma função única.
 - Aplicar filtros no queryset e no serviço.
 - Não expor conteúdo privado em listas públicas.
