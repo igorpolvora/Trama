@@ -17,3 +17,8 @@ class ParticipacaoDesafio(models.Model):
 
     class Meta:
         app_label = "desafios"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["usuario", "desafio"], name="participacao_usuario_desafio_unica"
+            ),
+        ]

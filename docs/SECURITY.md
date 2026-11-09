@@ -45,6 +45,8 @@ Controle aplicado no módulo de amizades: solicitar e responder (aceitar/recusar
 
 CA-07 no detalhe da comunidade: busca por ID executada diretamente no queryset filtrado por visibilidade; conteúdo inacessível e inexistente usam o mesmo caminho 404. Regressões HTTP conferem ausência de redirecionamento, título/texto/comentários/autor reservados e igualdade do corpo 404 com DEBUG desligado. Autor, amigo autorizado e leitor de conteúdo público continuam com acesso. POST inacessível não cria comentário. Não houve mudança na política de audiência ou bloqueio.
 
+Integridade das participações: restrição única por usuário/desafio no banco, além da chave idempotente dos eventos de pontos. Migração consolida duplicatas sem recalcular pontos; testes exercitam a migração com dados antigos e duas inscrições HTTP concorrentes no PostgreSQL com CSRF válido. A preservação de uma linha concluída não gera recompensas retroativas.
+
 - Centralizar visibilidade em uma função única.
 - Aplicar filtros no queryset e no serviço.
 - Não expor conteúdo privado em listas públicas.

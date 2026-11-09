@@ -2,9 +2,9 @@
 
 ## Estado atual
 
-- Etapa: 5/6 — CA-07 no detalhe da comunidade.
-- Implementação: Detalhe busca por ID no queryset de visibilidade; inexistente/inacessível retornam 404 sem redirecionar, conteúdo ou comentários. Sete regressões HTTP e acessos autorizados preservados.
-- Verificação deste estado intermediário: SQLite: 38 descobertos, 37 aprovados, 1 ignorados, 109.326 s, saída 0; PostgreSQL: 38 descobertos, 38 aprovados, 0 ignorados, 107.077 s, saída 0
+- Etapa: 6/6 — Participação única e consolidação de duplicatas.
+- Implementação: UniqueConstraint(usuario, desafio), migração de duplicatas e testes históricos/concorrentes de inscrição. Manter concluída de menor ID se houver; senão pendente de menor ID. Eventos de pontos intactos, sem créditos retroativos. Reverter remove unicidade, mas não recupera IDs eliminados: recuperação exige backup. Regra de consolidação aprovada explicitamente pelo responsável em 2026-11-09 nesta sessão.
+- Verificação deste estado intermediário: SQLite: 40 descobertos, 38 aprovados, 2 ignorados, 106.560 s, saída 0; PostgreSQL: 40 descobertos, 40 aprovados, 0 ignorados, 106.190 s, saída 0
 - Git: histórico local organizado em commits na branch main; nenhum push autorizado.
 - Bancos: somente descartáveis; banco pessoal não utilizado.
 - Decisões D06/D09/D10 e demais condições de piloto não foram encerradas.
@@ -124,6 +124,26 @@ Registros de execução anteriores ao fracionamento (referem-se ao working tree 
 - Riscos, limitações e pendências: outros achados e D06 continuam abertos; nenhum banco existente migrado.
 - Git: main, base 5bbd7b2, não commitado.
 - Próxima ação sugerida: selecionar próxima pendência da auditoria em incremento separado.
+
+### 2026-11-09 — Lote local 6: Participação única e consolidação de duplicatas
+- Escopo: UniqueConstraint(usuario, desafio), migração de duplicatas e testes históricos/concorrentes de inscrição. Manter concluída de menor ID se houver; senão pendente de menor ID. Eventos de pontos intactos, sem créditos retroativos. Reverter remove unicidade, mas não recupera IDs eliminados: recuperação exige backup. Regra de consolidação aprovada explicitamente pelo responsável em 2026-11-09 nesta sessão.
+- Verificação do estado intermediário: SQLite: 40 descobertos, 38 aprovados, 2 ignorados, 106.560 s, saída 0; PostgreSQL: 40 descobertos, 40 aprovados, 0 ignorados, 106.190 s, saída 0
+- Git: commit local deste incremento; consultar histórico.
+
+Registros de execução anteriores ao fracionamento (referem-se ao working tree histórico, não ao checkout intermediário):
+
+### 2026-11-09 — FIX-PARTICIPACAO-UNICA
+- Status: concluída.
+- Requisitos vinculados: RF10, CA-15, RNF-11 (regressões HTTP).
+- Objetivo e implementação: garantir unicidade no banco e consolidar duplicatas preservando conclusão e pontos existentes; fluxo inscrição usa get_or_create sem mudança de regra.
+- Arquivos afetados: src/desafios/models.py, migrations/0002_participacao_unica.py, test_migrations.py, tests.py; README e documentação de entrega.
+- Testes executados e resultado: erro com duplicatas reproduzido em SQLite; corrida de inscrição reproduzida no PostgreSQL antes da restrição. Após correção, migração e inscrição concorrente aprovadas isoladamente (2 testes/4,641 s). Suíte completa SQLite 40 descobertos/38 aprovados/2 skips (164,547 s); PostgreSQL 40 aprovados (163,691 s).
+- Testes não executados e motivo: bancos pessoais/produção fora do escopo; concorrência PostgreSQL ignorada no SQLite.
+- Problemas encontrados e soluções adotadas: banco permitia dupla inscrição e conclusão retornava MultipleObjectsReturned; restrição única permite ao get_or_create recuperar a participação concorrente. Migração preserva uma conclusão existente e deixa eventos intactos.
+- Decisões tomadas / ADRs: preservação autorizada aplicada sem recalcular pontuação; nenhuma regra de produto nova. Divergência histórica sem evento permanece sem concessão retroativa.
+- Riscos, limitações e pendências: reversão não recupera IDs removidos; backup exigido para recuperação. Apenas bancos descartáveis usados; nenhum banco real corrigido.
+- Git: main, base 5bbd7b2, não commitado.
+- Próxima ação sugerida: revisar migração e separar commits.
 
 ### 2026-10-26 — ID da tarefa: desenho inicial do MVP
 - Status: concluída

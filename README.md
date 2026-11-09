@@ -97,6 +97,7 @@ O usuário PostgreSQL precisa criar o banco de testes. O comando recusa banco de
 
 As migrações iniciais adicionadas para diário, amizades e moderação são destinadas à instalação normal em banco vazio. Bancos antigos criados por sincronização manual precisam de avaliação do esquema e backup antes de adotar essas migrações; este incremento não migrou bancos existentes. Reverter essas migrações remove suas tabelas e dados; recuperação de dados exige backup.
 
+A migração `desafios/0002_participacao_unica` consolida participações repetidas por usuário/desafio antes de criar a restrição única. Mantém uma linha já concluída quando existe (menor ID dentre as concluídas); se todas estão pendentes, mantém a de menor ID. Eventos de pontos não são alterados, removidos nem gerados. Não repara divergências anteriores entre conclusão e pontuação. Reverter remove a restrição, mas não recria as linhas redundantes: recuperação desses IDs exige backup. Aplicar em banco existente exige backup e janela sem inscrições/conclusões; neste trabalho só foram utilizados bancos descartáveis.
 
 ## Próximo passo
 

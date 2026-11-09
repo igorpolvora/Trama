@@ -56,11 +56,13 @@ A regra central deve operar como filtro de consulta e de listagem:
 
 ## Limitações conhecidas
 
-- Instalação vazia validada em SQLite e PostgreSQL 18 em 2026-11-09: 25 migrações aplicadas e 26 tabelas de modelos presentes. Diário, amizades e moderação têm migrações iniciais dependentes do usuário configurado. `scripts/verificar` descobre a suíte em `src`; resultados de cada etapa no progresso; não exige sincronização manual dos modelos.
+- Instalação vazia validada em SQLite e PostgreSQL 18 em 2026-11-09: 26 migrações aplicadas e 26 tabelas de modelos presentes. Diário, amizades e moderação têm migrações iniciais dependentes do usuário configurado. `scripts/verificar` descobre a suíte em `src`; resultados de cada etapa no progresso; não exige sincronização manual dos modelos.
 
 - Banco existente criado por sincronização manual não foi atualizado. Adoção das novas migrações nesse caso exige avaliação do esquema e backup; reversão das migrações iniciais remove tabelas/dados. Nenhum banco local foi utilizado nas verificações.
 
 - Participação e conclusão de desafios exigem POST/CSRF. A conclusão usa transação conjunta com os pontos e `select_for_update`. Rollback, repetição e autorização foram preservados nos testes HTTP. Concorrência validada em PostgreSQL 18: dois clientes com CSRF válido em conexões distintas aguardaram a mesma linha; ambas as respostas foram 302, com conclusão e um único evento de dez pontos. O teste usa `TransactionTestCase` e é ignorado explicitamente no SQLite, sem suporte equivalente a esse lock.
+
+- Participação em desafio tem unicidade `(usuario, desafio)` no banco. O `get_or_create` existente usa essa restrição para resolver a corrida entre inscrições; não há concessão de pontos na inscrição. Migração 0002 conserva uma linha concluída se existente (senão uma pendente), sem modificar eventos de pontos, que não referenciam IDs de participação. Reversão não restaura IDs redundantes removidos; usar backup para recuperação. Divergências antigas de conclusão/pontos não são recalculadas.
 
 - Ainda há decisões pendentes para cadastro, privacidade padrão, ranking global e retenção de dados.
 - A feature de ranking competitivo não deve ser implementada como premissa antes de D08 e D09.

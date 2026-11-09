@@ -6,6 +6,8 @@ Todos as mudanças relevantes do projeto serão registradas aqui.
 
 - Registrados diagnóstico e auditoria como documentos históricos da revisão inicial.
 
+- Participação única por usuário/desafio garantida no banco; migração consolida duplicatas preservando conclusão existente e eventos de pontos. Regressões de migração e inscrição simultânea PostgreSQL adicionadas.
+
 - Detalhe da comunidade retorna 404 para conteúdo inacessível e inexistente, sem redirecionar; consultas autorizadas e regras de visibilidade preservadas.
 
 - Participação e conclusão de desafios exigem POST/CSRF, com formulários e testes de rota; teste PostgreSQL de duas conclusões simultâneas confirma crédito único.

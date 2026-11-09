@@ -1,11 +1,13 @@
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
+from threading import Barrier
 import time
 from unittest import skipUnless
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.db import close_old_connections, connection, connections, transaction
+from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 from django.test import Client, TestCase, TransactionTestCase
 from django.urls import reverse
@@ -131,6 +133,52 @@ class ConclusaoConcorrenteTests(TransactionTestCase):
         eventos = EventoPontos.objects.filter(usuario=usuario)
         self.assertEqual(eventos.count(), 1)
         self.assertEqual(eventos.get().quantidade, 10)
+
+
+@skipUnless(connection.vendor == "postgresql", "Concorrência exige PostgreSQL")
+class InscricaoConcorrenteTests(TransactionTestCase):
+    """CA-15: duas inscrições pela rota devem produzir uma participação."""
+
+    def test_duas_inscricoes_simultaneas_criam_uma_participacao(self):
+        usuario = Usuario.objects.create_user(username="inscricao_simultanea")
+        desafio = Desafio.objects.create(nome="Inscrição simultânea")
+        url = reverse("desafios:participar", args=[desafio.pk])
+        clientes = []
+        for _ in range(2):
+            client = Client(enforce_csrf_checks=True)
+            client.force_login(usuario)
+            client.get(reverse("desafios:lista"))
+            clientes.append((client, client.cookies["csrftoken"].value))
+        barreira = Barrier(2, timeout=10)
+        pids = Queue()
+        criar = QuerySet.create
+
+        def criar_simultaneamente(queryset, **kwargs):
+            if queryset.model is ParticipacaoDesafio:
+                with connection.cursor() as cursor:
+                    cursor.execute("SET LOCAL lock_timeout = '15s'")
+                    cursor.execute("SELECT pg_backend_pid()")
+                    pids.put(cursor.fetchone()[0])
+                # Ambos os get_or_create já consultaram e não acharam a participação.
+                barreira.wait()
+            return criar(queryset, **kwargs)
+
+        def inscrever(client, token):
+            close_old_connections()
+            try:
+                return client.post(url, {"csrfmiddlewaretoken": token}).status_code
+            finally:
+                connections.close_all()
+
+        with patch.object(QuerySet, "create", criar_simultaneamente):
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                futures = [executor.submit(inscrever, *cliente) for cliente in clientes]
+                self.assertEqual([future.result(timeout=25) for future in futures], [302, 302])
+        self.assertNotEqual(pids.get(timeout=1), pids.get(timeout=1))
+        participacoes = ParticipacaoDesafio.objects.filter(usuario=usuario, desafio=desafio)
+        self.assertEqual(participacoes.count(), 1)
+        self.assertFalse(participacoes.get().concluido)
+        self.assertFalse(EventoPontos.objects.filter(usuario=usuario).exists())
 
 
 class ConclusaoDesafioRotaTests(TestCase):
