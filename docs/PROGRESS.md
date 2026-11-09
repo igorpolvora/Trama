@@ -2,19 +2,35 @@
 
 ## Estado atual
 
-- Status: base funcional do MVP em andamento, com autenticação, diário, comunidade, desafios e ranking mínimo ativos
-- Requisitos vinculados: RF01, RF02, RF03, RF04, RF05, RF06, RF07, RF08, RF09, RF10, RF11, RF12, RNF-01 a RNF-08, RNF-12, RNF-13, RNF-19, RNF-20
-- Objetivo: consolidar a base técnica e funcional do MVP, preservando as decisões pendentes de produto e mantendo a competição opcional e limitada.
-- Arquivos afetados: [README.md](../README.md), [CHANGELOG.md](../CHANGELOG.md), [src/trama/settings.py](../src/trama/settings.py), [src/trama/urls.py](../src/trama/urls.py), [src/acesso/visibility.py](../src/acesso/visibility.py), [src/contas/views.py](../src/contas/views.py), [src/diario/views.py](../src/diario/views.py), [src/comunidade/views.py](../src/comunidade/views.py), [src/desafios/views.py](../src/desafios/views.py), [src/pontuacao/views.py](../src/pontuacao/views.py), [templates/contas/home.html](../templates/contas/home.html), [templates/pontuacao/ranking.html](../templates/pontuacao/ranking.html)
-- Testes executados: `python manage.py test desafios pontuacao` — OK, 4 testes executados com sucesso.
-- Testes pendentes: regras finais de liga, ranking global, temporadas, moderação e revisão de privacidade/legal, conforme decisões D08, D09, D10, D12 e D15.
-- Problemas encontrados e soluções adotadas: a lógica de pontuação foi centralizada em um serviço idempotente e a navegação do ranking foi integrada sem assumir regras ainda não aprovadas; a visibilidade continua sendo tratada por servidor.
-- Decisões tomadas: manter as decisões pendentes explícitas, preservar audiência privada/amigos/pública e tratar a competição como opt-in e não como regra obrigatória.
-- Riscos e pendências: D08, D09, D10, D12, D14, D15 e D20 ainda exigem aprovação humana antes de avançar para a etapa final da experiência.
-- Git: branch `main`; commit `598f0ab` registrado no histórico.
-- Próxima ação sugerida: validar a experiência completa com foco em ranking, navegação e exportação de comportamento do módulo de pontuação, mantendo o escopo restrito ao MVP aprovado.
+- Etapa: 1/6 — Diagnóstico e auditoria históricos.
+- Implementação: Registrar diagnóstico e auditoria como retratos históricos anteriores aos commits de correção; sem mudança funcional.
+- Verificação deste estado intermediário: Verificador Bash legado: documentação aprovada (saída 0). Não executa suíte nem utiliza bancos; verificação completa disponível a partir do commit de instalação.
+- Git: histórico local organizado em commits na branch main; nenhum push autorizado.
+- Bancos: somente descartáveis; banco pessoal não utilizado.
+- Decisões D06/D09/D10 e demais condições de piloto não foram encerradas.
+- Como verificar: verificador Bash legado; testes completos ainda indisponíveis nesta etapa.
 
 ## Diário de evolução
+
+### 2026-11-09 — Lote local 1: Diagnóstico e auditoria históricos
+- Escopo: Registrar diagnóstico e auditoria como retratos históricos anteriores aos commits de correção; sem mudança funcional.
+- Verificação do estado intermediário: Verificador Bash legado: documentação aprovada (saída 0). Não executa suíte nem utiliza bancos; verificação completa disponível a partir do commit de instalação.
+- Git: commit local deste incremento; consultar histórico.
+
+Registros de execução anteriores ao fracionamento (referem-se ao working tree histórico, não ao checkout intermediário):
+
+### 2026-11-09 — AUDIT-01: duas auditorias independentes
+- Status: auditoria concluída; validação funcional parcial por bloqueio de preparação dos testes PostgreSQL.
+- Requisitos vinculados: RNF-05/06/11, CA-07/08/14/27, instalação e rastreabilidade.
+- Objetivo e implementação: dois subagentes em paralelo, após correção de desafios; somente leitura do repositório e probes em ambientes/bancos descartáveis. Achados no [relatório](./AUDITORIA-2026-11-09.md).
+- Arquivos afetados: relatório e progresso consolidados pelo agente principal; subagentes não editaram arquivos versionados.
+- Testes executados e resultado: instalação nova e pip check OK; SQLite 20/20; descoberta padrão zero; migrate 22 em SQLite/PostgreSQL, mas sete tabelas ausentes; probes HTTP de visibilidade e IDOR executados.
+- Testes não executados e motivo: suíte PostgreSQL detecta 20 mas falha preparando FK de usuário; contorno diagnóstico dos oito testes também falhou preparando FK auth_group. Concorrência não exercitada.
+- Problemas encontrados e soluções adotadas: apenas registrados; sem correções durante auditoria. PostgreSQL temporário encerrado, banco local não utilizado.
+- Decisões tomadas / ADRs: nenhuma; efeitos de comentários após bloqueio/perda de acesso continuam D06.
+- Riscos, limitações e pendências: migrações, GET com efeitos e distinção 302/404 prioritários; detalhes e limites no relatório.
+- Git: branch `main`, base `5bbd7b2`, não commitado.
+- Próxima ação sugerida: completar migrações e validar suíte PostgreSQL antes de ampliar funções.
 
 ### 2026-10-26 — ID da tarefa: desenho inicial do MVP
 - Status: concluída

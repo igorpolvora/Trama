@@ -4,6 +4,10 @@ Todos as mudanças relevantes do projeto serão registradas aqui.
 
 ## Unreleased
 
+- Registrados diagnóstico e auditoria como documentos históricos da revisão inicial.
+
+
+
 - Estrutura inicial do repositório criada.
 - Documentação base do projeto iniciada a partir dos arquivos de produto e operacional.
 - Definição inicial de arquitetura do MVP e do Incremento 0.
