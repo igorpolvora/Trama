@@ -17,8 +17,14 @@
         {% for amizade in solicitacoes %}
           <li>
             {{ amizade.de.username }}
-            <a href="{% url 'amizades:responder' amizade.pk 'aceitar' %}">Aceitar</a>
-            <a href="{% url 'amizades:responder' amizade.pk 'recusar' %}">Recusar</a>
+            <form method="post" action="{% url 'amizades:responder' amizade.pk 'aceitar' %}">
+              {% csrf_token %}
+              <button type="submit">Aceitar</button>
+            </form>
+            <form method="post" action="{% url 'amizades:responder' amizade.pk 'recusar' %}">
+              {% csrf_token %}
+              <button type="submit">Recusar</button>
+            </form>
           </li>
         {% endfor %}
       </ul>

@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 
 from .models import Amizade
 
@@ -21,6 +22,7 @@ def lista_amigos(request):
 
 
 @login_required
+@require_POST
 def solicitar_amizade(request, usuario_id):
     if usuario_id == request.user.pk:
         messages.info(request, "Você não pode enviar solicitação para si mesmo.")
@@ -44,6 +46,7 @@ def solicitar_amizade(request, usuario_id):
 
 
 @login_required
+@require_POST
 def responder_solicitacao(request, pk, acao):
     amizade = get_object_or_404(Amizade, pk=pk, para=request.user)
 

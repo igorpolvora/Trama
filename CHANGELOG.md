@@ -8,6 +8,8 @@ Todos as mudanças relevantes do projeto serão registradas aqui.
 
 - Participação e conclusão de desafios exigem POST/CSRF, com formulários e testes de rota; teste PostgreSQL de duas conclusões simultâneas confirma crédito único.
 
+- Solicitar, aceitar e recusar amizade agora exigem POST com CSRF; aceitar/recusar usam formulários, com regressões HTTP de método, token e titularidade.
+
 - Adicionadas migrações iniciais de diário, amizades e moderação, validadas em instalações vazias SQLite e PostgreSQL 18.
 - Comando `python scripts/verificar` agora valida instalação por migrações, tabelas e descobre a suíte em `src`, com bancos descartáveis separados para instalação e testes.
 

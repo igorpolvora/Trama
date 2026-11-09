@@ -41,6 +41,8 @@ Os riscos principais previstos para o MVP são:
 
 Desafios: participar e concluir exigem POST, com tokens nos formulários e verificação do middleware CSRF. As regressões com CSRF habilitado cobrem GET 405 sem mutação, POST sem token/inválido 403 e POST autorizado. Permissões e dez pontos existentes foram preservados. Teste de concorrência PostgreSQL pela rota verifica exclusão mútua sobre a participação e crédito único (CA-15).
 
+Controle aplicado no módulo de amizades: solicitar e responder (aceitar/recusar) exigem POST e passam pelo middleware CSRF existente. Os formulários de resposta incluem token; login obrigatório e filtro pelo destinatário foram preservados. Sete regressões de rotas usam `Client(enforce_csrf_checks=True)` para método, token e titularidade (RNF-11, CA-27). O controle é restrito a essas ações; outras mutações por GET apontadas na auditoria continuam fora deste incremento.
+
 - Centralizar visibilidade em uma função única.
 - Aplicar filtros no queryset e no serviço.
 - Não expor conteúdo privado em listas públicas.

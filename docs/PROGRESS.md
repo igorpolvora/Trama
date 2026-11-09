@@ -2,9 +2,9 @@
 
 ## Estado atual
 
-- Etapa: 3/6 — Conclusão atômica, POST/CSRF e concorrência de desafios.
-- Implementação: Identificador do usuário corrigido, transação conjunta de conclusão/pontos e select_for_update; participar/concluir exigem POST/CSRF com formulários. Testes de primeira conclusão, repetição, rollback, autorização e concorrência PostgreSQL.
-- Verificação deste estado intermediário: SQLite: 24 descobertos, 23 aprovados, 1 ignorados, 102.341 s, saída 0; PostgreSQL: 24 descobertos, 24 aprovados, 0 ignorados, 99.776 s, saída 0
+- Etapa: 4/6 — POST/CSRF nas ações de amizade.
+- Implementação: Solicitar/aceitar/recusar amizade exigem POST/CSRF, com formulários de resposta e filtros de titularidade preservados. Sete regressões com CSRF habilitado.
+- Verificação deste estado intermediário: SQLite: 31 descobertos, 30 aprovados, 1 ignorados, 108.341 s, saída 0; PostgreSQL: 31 descobertos, 31 aprovados, 0 ignorados, 106.571 s, saída 0
 - Git: histórico local organizado em commits na branch main; nenhum push autorizado.
 - Bancos: somente descartáveis; banco pessoal não utilizado.
 - Decisões D06/D09/D10 e demais condições de piloto não foram encerradas.
@@ -84,6 +84,26 @@ Registros de execução anteriores ao fracionamento (referem-se ao working tree 
 - Riscos, limitações e pendências: mutação por GET continua pendente; regras finais D09/D10 e validação PostgreSQL abertas.
 - Git: branch `main`, base `5bbd7b2`, não commitado.
 - Próxima ação sugerida: priorizar auditorias e proteção contra mutação por GET.
+
+### 2026-11-09 — Lote local 4: POST/CSRF nas ações de amizade
+- Escopo: Solicitar/aceitar/recusar amizade exigem POST/CSRF, com formulários de resposta e filtros de titularidade preservados. Sete regressões com CSRF habilitado.
+- Verificação do estado intermediário: SQLite: 31 descobertos, 30 aprovados, 1 ignorados, 108.341 s, saída 0; PostgreSQL: 31 descobertos, 31 aprovados, 0 ignorados, 106.571 s, saída 0
+- Git: commit local deste incremento; consultar histórico.
+
+Registros de execução anteriores ao fracionamento (referem-se ao working tree histórico, não ao checkout intermediário):
+
+### 2026-11-09 — FIX-CSRF-AMIZADES: ações de amizade por POST
+- Status: concluída.
+- Requisitos vinculados: RF08, RNF-11, CA-27.
+- Objetivo e implementação: eliminar mutações por GET em solicitar/responder amizade, com formulários POST/CSRF para aceitar/recusar e permissões existentes preservadas.
+- Arquivos afetados: src/amizades/views.py, src/amizades/tests.py, templates/amizades/lista.html, CHANGELOG.md, docs/ROADMAP.md, docs/SECURITY.md e este progresso.
+- Testes executados e resultado: sete regressões HTTP de método/token/autorização e suíte completa; 27 encontrados e aprovados em cada banco (SQLite 109,786 s, PostgreSQL 18 99,340 s). Instalação e checks incluídos no comando verificar, sem falhas.
+- Testes não executados e motivo: navegador e acessibilidade manual fora do escopo; regressões validam HTML dos formulários e requisições reais pelo cliente Django.
+- Problemas encontrados e soluções adotadas: links de resposta substituídos por formulários; views exigem POST sem mudar filtros de titularidade. Rota solicitar não tinha botão existente a atualizar.
+- Decisões tomadas / ADRs: nenhuma; sem alterar política de bloqueio, amizade ou decisões de produto.
+- Riscos, limitações e pendências: outras mutações por GET e distinção 302/404 da comunidade continuam fora deste incremento.
+- Git: branch main, base 5bbd7b2, não commitado.
+- Próxima ação sugerida: corrigir CA-07 em incremento separado.
 
 ### 2026-10-26 — ID da tarefa: desenho inicial do MVP
 - Status: concluída
