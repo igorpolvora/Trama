@@ -72,4 +72,4 @@ Antes do piloto, a revisão recomenda que as seguintes condições estejam ativa
 
 ## Status geral
 
-A fase atual é de desenho e preparação. A implementação funcional deve começar somente após a base técnica e os bloqueios de produto estarem explicitados e revisados.
+Instalação e verificação automatizada disponíveis. Resultados por estado intermediário em [PROGRESS.md](./PROGRESS.md). Decisões de produto e condições de piloto permanecem pendentes.

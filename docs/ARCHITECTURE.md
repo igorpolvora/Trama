@@ -54,6 +54,10 @@ A regra central deve operar como filtro de consulta e de listagem:
 
 ## Limitações conhecidas
 
+- Instalação vazia validada em SQLite e PostgreSQL 18 em 2026-11-09: 25 migrações aplicadas e 26 tabelas de modelos presentes. Diário, amizades e moderação têm migrações iniciais dependentes do usuário configurado. `scripts/verificar` descobre a suíte em `src`; resultados de cada etapa no progresso; não exige sincronização manual dos modelos.
+
+- Banco existente criado por sincronização manual não foi atualizado. Adoção das novas migrações nesse caso exige avaliação do esquema e backup; reversão das migrações iniciais remove tabelas/dados. Nenhum banco local foi utilizado nas verificações.
+
 - Ainda há decisões pendentes para cadastro, privacidade padrão, ranking global e retenção de dados.
 - A feature de ranking competitivo não deve ser implementada como premissa antes de D08 e D09.
 - A moderação de conteúdo privado continua dependente de D10.

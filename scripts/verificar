@@ -1,23 +1,88 @@
-#!/usr/bin/env bash
-set -eu
+#!/usr/bin/env python
+"""Verifica instalação e suíte sem utilizar o banco local do projeto."""
+import argparse
+import os
+from pathlib import Path
+import sys
+from tempfile import TemporaryDirectory
+from uuid import uuid4
 
-required=(
-  "README.md"
-  "CHANGELOG.md"
-  "Trama.md"
-  "AGENTS.MD"
-  "docs/PROGRESS.md"
-  "docs/ROADMAP.md"
-  "docs/ARCHITECTURE.md"
-  "docs/SECURITY.md"
-  "Trama_Incremento_0.md"
-)
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / 'src'))
 
-for item in "${required[@]}"; do
-  if [ ! -f "$item" ]; then
-    echo "Falta: $item"
-    exit 1
-  fi
-done
 
-echo "Documentação base do Trama verificada com sucesso."
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--database', choices=['sqlite', 'postgresql'], default='sqlite')
+    parser.add_argument('--postgres-db', help='Banco PostgreSQL descartável, já criado e vazio')
+    args = parser.parse_args()
+    if args.database == 'postgresql' and not args.postgres_db:
+        parser.error('PostgreSQL exige --postgres-db com banco descartável vazio')
+
+    required = ['README.md', 'CHANGELOG.md', 'Trama.md', 'AGENTS.MD',
+                'docs/PROGRESS.md', 'docs/ROADMAP.md', 'docs/ARCHITECTURE.md',
+                'docs/SECURITY.md', 'Trama_Incremento_0.md']
+    for item in required:
+        if not (ROOT / item).is_file():
+            raise RuntimeError(f'Falta: {item}')
+
+    import django
+    from django.conf import settings
+    from trama import settings as project_settings
+
+    with TemporaryDirectory(prefix='trama-verificar-') as directory:
+        if args.database == 'sqlite':
+            database = {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': str(Path(directory) / 'instalacao.sqlite3'),
+                'TEST': {'NAME': str(Path(directory) / 'testes.sqlite3')},
+            }
+        else:
+            database = {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': args.postgres_db,
+                'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
+                'PORT': os.getenv('POSTGRES_PORT', '5432'),
+                'USER': os.getenv('POSTGRES_USER', 'postgres'),
+                'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
+                'TEST': {'NAME': 'test_trama_' + uuid4().hex[:16]},
+            }
+        config = {key: getattr(project_settings, key)
+                  for key in dir(project_settings) if key.isupper()}
+        config.update(DATABASES={'default': database},
+                      ALLOWED_HOSTS=['testserver', 'localhost', '127.0.0.1'])
+        settings.configure(**config)
+        django.setup()
+        from django.apps import apps
+        from django.core.management import call_command
+        from django.db import connection, connections
+        from django.test.runner import DiscoverRunner
+
+        class SuiteObrigatoria(DiscoverRunner):
+            def build_suite(self, *args, **kwargs):
+                suite = super().build_suite(*args, **kwargs)
+                if suite.countTestCases() == 0:
+                    raise RuntimeError('Nenhum teste descoberto')
+                return suite
+
+        try:
+            if connection.introspection.table_names():
+                raise RuntimeError('Banco de instalação não está vazio; nada foi migrado')
+            call_command('check')
+            call_command('makemigrations', check=True, dry_run=True)
+            call_command('migrate', interactive=False)
+            expected = {model._meta.db_table
+                        for model in apps.get_models(include_auto_created=True)
+                        if model._meta.managed and not model._meta.proxy}
+            actual = set(connection.introspection.table_names())
+            if expected - actual:
+                raise RuntimeError(f'Tabelas ausentes: {sorted(expected - actual)}')
+            print(f'Instalação {args.database}: {len(expected)} tabelas esperadas presentes', flush=True)
+            failures = SuiteObrigatoria(verbosity=2, interactive=False).run_tests([str(ROOT / 'src')])
+            return 1 if failures else 0
+        finally:
+            connections.close_all()
+
+
+if __name__ == '__main__':
+    sys.exit(main())

@@ -75,6 +75,29 @@ Observação: a decisão de stack foi tratada como recomendação e não como ad
 - A documentação técnica e de produto está sendo estruturada a partir dos documentos de produto e operacional.
 - Foi criado um esqueleto técnico inicial em Django para refletir a arquitetura sugerida no MVP, incluindo apps de contas, diário, acessos, comunidade, moderação, desafios e pontuação.
 
+## Verificação da instalação e dos testes
+
+Com Python 3.14 e as dependências declaradas, no PowerShell:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe scripts/verificar
+```
+
+O comando é Python (substitui o antigo script Bash), funciona a partir de qualquer diretório e usa SQLite temporário para instalar por migrações normais. Confere documentos, checks do Django, ausência de migrações pendentes de geração e todas as tabelas dos modelos; depois descobre a suíte em `src/`, falhando se nenhum teste for encontrado. O banco local não é utilizado. O comando direto `manage.py test` sem indicar o diretório continua fora deste fluxo; para execução avulsa, use `manage.py test src` com configuração de banco isolada.
+
+Para PostgreSQL, prepare um servidor descartável e crie um banco vazio exclusivo para a verificação. Configure `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_USER` e `POSTGRES_PASSWORD` no ambiente e execute:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/verificar --database postgresql --postgres-db trama_verificacao
+```
+
+O usuário PostgreSQL precisa criar o banco de testes. O comando recusa banco de instalação com tabelas; aplica migrações apenas no banco explicitamente indicado e usa outro banco com nome aleatório para os testes. O Django remove o banco de testes ao terminar; o banco de instalação PostgreSQL permanece no servidor descartável, sob responsabilidade de quem o criou. Não use o banco pessoal como destino.
+
+As migrações iniciais adicionadas para diário, amizades e moderação são destinadas à instalação normal em banco vazio. Bancos antigos criados por sincronização manual precisam de avaliação do esquema e backup antes de adotar essas migrações; este incremento não migrou bancos existentes. Reverter essas migrações remove suas tabelas e dados; recuperação de dados exige backup.
+
+
 ## Próximo passo
 
 Implementar o Incremento 0: fundação técnica, estrutura de diretórios, ambiente, regras de segurança, modelo de visibilidade e documentação mínima de integração.

@@ -2,13 +2,13 @@
 
 ## Estado atual
 
-- Etapa: 1/6 — Diagnóstico e auditoria históricos.
-- Implementação: Registrar diagnóstico e auditoria como retratos históricos anteriores aos commits de correção; sem mudança funcional.
-- Verificação deste estado intermediário: Verificador Bash legado: documentação aprovada (saída 0). Não executa suíte nem utiliza bancos; verificação completa disponível a partir do commit de instalação.
+- Etapa: 2/6 — Instalação por migrações e verificação isolada.
+- Implementação: Migrações iniciais de diário, amizades e moderação; verificador Python com checks, migrações normais, tabelas e descoberta em src; bancos descartáveis separados.
+- Verificação deste estado intermediário: SQLite: 16 descobertos, 16 aprovados, 0 ignorados, 80.638 s, saída 0; PostgreSQL: 16 descobertos, 16 aprovados, 0 ignorados, 78.390 s, saída 0
 - Git: histórico local organizado em commits na branch main; nenhum push autorizado.
 - Bancos: somente descartáveis; banco pessoal não utilizado.
 - Decisões D06/D09/D10 e demais condições de piloto não foram encerradas.
-- Como verificar: verificador Bash legado; testes completos ainda indisponíveis nesta etapa.
+- Como verificar: `python scripts/verificar`; PostgreSQL exige servidor descartável, banco vazio explícito e variáveis POSTGRES_HOST/PORT/USER/PASSWORD conforme README.
 
 ## Diário de evolução
 
@@ -31,6 +31,26 @@ Registros de execução anteriores ao fracionamento (referem-se ao working tree 
 - Riscos, limitações e pendências: migrações, GET com efeitos e distinção 302/404 prioritários; detalhes e limites no relatório.
 - Git: branch `main`, base `5bbd7b2`, não commitado.
 - Próxima ação sugerida: completar migrações e validar suíte PostgreSQL antes de ampliar funções.
+
+### 2026-11-09 — Lote local 2: Instalação por migrações e verificação isolada
+- Escopo: Migrações iniciais de diário, amizades e moderação; verificador Python com checks, migrações normais, tabelas e descoberta em src; bancos descartáveis separados.
+- Verificação do estado intermediário: SQLite: 16 descobertos, 16 aprovados, 0 ignorados, 80.638 s, saída 0; PostgreSQL: 16 descobertos, 16 aprovados, 0 ignorados, 78.390 s, saída 0
+- Git: commit local deste incremento; consultar histórico.
+
+Registros de execução anteriores ao fracionamento (referem-se ao working tree histórico, não ao checkout intermediário):
+
+### 2026-11-09 — FIX-INSTALL-01: migrações completas e suíte nos dois bancos
+- Status: concluída.
+- Requisitos vinculados: fundação técnica, RF03/RF08/RF14 (persistência dos modelos existentes), CA-15/CA-27 (regressões), RNF-05/06 (testes existentes).
+- Objetivo e implementação: instalação normal em banco vazio; três migrações iniciais com dependência do usuário e verificador Python que confere documentos, checks, migrações, tabelas e suíte descoberta em src.
+- Arquivos afetados: migrações e inicializadores de diário/amizades/moderação; scripts/verificar; README, changelog, arquitetura, roadmap e progresso.
+- Testes executados e resultado: 20 encontrados e 20 aprovados por banco (SQLite 78,878 s; PostgreSQL 18 76,132 s). Quatro testes da rota de conclusão aprovados nos dois. Instalação com 25 migrações e 26 tabelas de modelos; recusa de banco preenchido confirmada.
+- Testes não executados e motivo: migração de banco preexistente fora do escopo; concorrência real e demais fluxos sem novos testes neste incremento.
+- Problemas encontrados e soluções adotadas: ausência de migrações resolvida sem sincronização manual; descoberta zero corrigida no comando de verificação com diretório explícito e falha em suíte vazia.
+- Decisões tomadas / ADRs: nenhuma decisão de produto ou stack alterada; modelos existentes preservados.
+- Riscos, limitações e pendências: reverter migrações iniciais apaga tabelas; não aplicar em banco preexistente sem conferir esquema/backup. Demais achados da auditoria continuam abertos.
+- Git: branch main, base 5bbd7b2, não commitado.
+- Próxima ação sugerida: proteção POST/CSRF e CA-07 em incremento separado.
 
 ### 2026-10-26 — ID da tarefa: desenho inicial do MVP
 - Status: concluída
