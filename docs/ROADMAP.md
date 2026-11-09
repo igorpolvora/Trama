@@ -25,7 +25,7 @@ Este roadmap organiza o primeiro ciclo de desenvolvimento em incrementos verific
 | RF03 | Registro de estudo | Criação, edição e exclusão do diário | pendente |
 | RF04 | Metas pessoais | Progresso de meta via registro | pendente |
 | RF05 | Conteúdo de comunidade | Criação de texto/link com visibilidade aplicada | pendente |
-| RF06 | Visibilidade privado/amigos/público | Matrix de acesso por audiência | pendente |
+| RF06 | CA-07/08/27: detalhe sem revelar existência e acessos autorizados | DetalheConteudoRotaTests: sete regressões HTTP | parcial: matriz completa e D06 pendentes |
 | RF07 | Feed simples | Feed filtrando itens acessíveis | pendente |
 | RF08 | CA-27 / RNF-11: titularidade e POST/CSRF | AmizadesCsrfTests: GET 405, token ausente/inválido 403, POST válido e pedido alheio 404 | parcial: bloqueio e D06 pendentes |
 | RF09 | Comentários | Comentário visível para quem tem acesso | pendente |

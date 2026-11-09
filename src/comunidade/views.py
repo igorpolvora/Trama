@@ -28,9 +28,9 @@ def conteudo_novo(request):
 
 @login_required
 def conteudo_detalhe(request, pk):
-    conteudo = get_object_or_404(Conteudo.objects.select_related("autor"), pk=pk)
-    if not visiveis_para(Conteudo.objects.filter(pk=conteudo.pk), request.user).exists():
-        return redirect("comunidade:feed")
+    conteudo = get_object_or_404(
+        visiveis_para(Conteudo.objects.select_related("autor"), request.user), pk=pk
+    )
 
     comentarios = conteudo.comentarios.select_related("autor").all()
     form = ComentarioForm(request.POST or None)

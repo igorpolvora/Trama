@@ -2,9 +2,9 @@
 
 ## Estado atual
 
-- Etapa: 4/6 — POST/CSRF nas ações de amizade.
-- Implementação: Solicitar/aceitar/recusar amizade exigem POST/CSRF, com formulários de resposta e filtros de titularidade preservados. Sete regressões com CSRF habilitado.
-- Verificação deste estado intermediário: SQLite: 31 descobertos, 30 aprovados, 1 ignorados, 108.341 s, saída 0; PostgreSQL: 31 descobertos, 31 aprovados, 0 ignorados, 106.571 s, saída 0
+- Etapa: 5/6 — CA-07 no detalhe da comunidade.
+- Implementação: Detalhe busca por ID no queryset de visibilidade; inexistente/inacessível retornam 404 sem redirecionar, conteúdo ou comentários. Sete regressões HTTP e acessos autorizados preservados.
+- Verificação deste estado intermediário: SQLite: 38 descobertos, 37 aprovados, 1 ignorados, 109.326 s, saída 0; PostgreSQL: 38 descobertos, 38 aprovados, 0 ignorados, 107.077 s, saída 0
 - Git: histórico local organizado em commits na branch main; nenhum push autorizado.
 - Bancos: somente descartáveis; banco pessoal não utilizado.
 - Decisões D06/D09/D10 e demais condições de piloto não foram encerradas.
@@ -104,6 +104,26 @@ Registros de execução anteriores ao fracionamento (referem-se ao working tree 
 - Riscos, limitações e pendências: outras mutações por GET e distinção 302/404 da comunidade continuam fora deste incremento.
 - Git: branch main, base 5bbd7b2, não commitado.
 - Próxima ação sugerida: corrigir CA-07 em incremento separado.
+
+### 2026-11-09 — Lote local 5: CA-07 no detalhe da comunidade
+- Escopo: Detalhe busca por ID no queryset de visibilidade; inexistente/inacessível retornam 404 sem redirecionar, conteúdo ou comentários. Sete regressões HTTP e acessos autorizados preservados.
+- Verificação do estado intermediário: SQLite: 38 descobertos, 37 aprovados, 1 ignorados, 109.326 s, saída 0; PostgreSQL: 38 descobertos, 38 aprovados, 0 ignorados, 107.077 s, saída 0
+- Git: commit local deste incremento; consultar histórico.
+
+Registros de execução anteriores ao fracionamento (referem-se ao working tree histórico, não ao checkout intermediário):
+
+### 2026-11-09 — FIX-CA07: detalhe sem revelar existência
+- Status: concluída.
+- Requisitos vinculados: RF06, CA-07/08/27, RNF-05/06.
+- Objetivo e implementação: usar o queryset de visibilidade diretamente na busca de detalhe, retornando 404 tanto para inexistente como inacessível, sem redirecionar nem processar comentários.
+- Arquivos afetados: views e testes da comunidade, changelog, arquitetura, segurança, roadmap e progresso.
+- Testes executados e resultado: reprodução inicial 7 testes/3 falhas por 302; após correção, sete regressões aprovadas nos dois bancos. Suíte completa: SQLite 38 descobertos, 37 aprovados + 1 skip (108,264 s); PostgreSQL 38 aprovados (98,996 s). Migrações/checks/tabelas e diff sem erros.
+- Testes não executados e motivo: navegador e análise temporal de respostas fora do escopo; teste de concorrência PostgreSQL ignorado no SQLite, como previsto.
+- Problemas encontrados e soluções adotadas: consulta original distinguia existência antes de verificar audiência; consulta filtrada unifica o caminho 404. Autor, amigo autorizado e leitor de público continuam com 200.
+- Decisões tomadas / ADRs: nenhuma; política de visibilidade preservada.
+- Riscos, limitações e pendências: outros achados e D06 continuam abertos; nenhum banco existente migrado.
+- Git: main, base 5bbd7b2, não commitado.
+- Próxima ação sugerida: selecionar próxima pendência da auditoria em incremento separado.
 
 ### 2026-10-26 — ID da tarefa: desenho inicial do MVP
 - Status: concluída

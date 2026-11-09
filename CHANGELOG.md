@@ -6,6 +6,8 @@ Todos as mudanças relevantes do projeto serão registradas aqui.
 
 - Registrados diagnóstico e auditoria como documentos históricos da revisão inicial.
 
+- Detalhe da comunidade retorna 404 para conteúdo inacessível e inexistente, sem redirecionar; consultas autorizadas e regras de visibilidade preservadas.
+
 - Participação e conclusão de desafios exigem POST/CSRF, com formulários e testes de rota; teste PostgreSQL de duas conclusões simultâneas confirma crédito único.
 
 - Solicitar, aceitar e recusar amizade agora exigem POST com CSRF; aceitar/recusar usam formulários, com regressões HTTP de método, token e titularidade.

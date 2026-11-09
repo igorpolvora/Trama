@@ -28,6 +28,8 @@ A arquitetura proposta para o MVP do Trama segue a recomendação do documento d
 
 ## Regras de visibilidade
 
+O detalhe da comunidade consulta `visiveis_para` antes da busca por ID com `get_object_or_404`. Conteúdo inexistente e conteúdo fora da audiência seguem o mesmo caminho 404, antes de consultar comentários ou processar formulário; o filtro central e suas regras não foram alterados. Sete regressões HTTP cobrem negação sem redirecionamento/exposição e acessos autorizados (CA-07/08/27).
+
 A regra central deve operar como filtro de consulta e de listagem:
 - autor sempre consegue ver seu próprio conteúdo;
 - conteúdo público é acessível para todos os usuários autenticados ou visitantes, quando aprovado;

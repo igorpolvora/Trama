@@ -43,6 +43,8 @@ Desafios: participar e concluir exigem POST, com tokens nos formulários e verif
 
 Controle aplicado no módulo de amizades: solicitar e responder (aceitar/recusar) exigem POST e passam pelo middleware CSRF existente. Os formulários de resposta incluem token; login obrigatório e filtro pelo destinatário foram preservados. Sete regressões de rotas usam `Client(enforce_csrf_checks=True)` para método, token e titularidade (RNF-11, CA-27). O controle é restrito a essas ações; outras mutações por GET apontadas na auditoria continuam fora deste incremento.
 
+CA-07 no detalhe da comunidade: busca por ID executada diretamente no queryset filtrado por visibilidade; conteúdo inacessível e inexistente usam o mesmo caminho 404. Regressões HTTP conferem ausência de redirecionamento, título/texto/comentários/autor reservados e igualdade do corpo 404 com DEBUG desligado. Autor, amigo autorizado e leitor de conteúdo público continuam com acesso. POST inacessível não cria comentário. Não houve mudança na política de audiência ou bloqueio.
+
 - Centralizar visibilidade em uma função única.
 - Aplicar filtros no queryset e no serviço.
 - Não expor conteúdo privado em listas públicas.
